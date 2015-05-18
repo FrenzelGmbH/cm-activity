@@ -7,7 +7,7 @@ use yii\db\Migration;
  * @author Philipp Frenzel <philipp@frenzel.net>
  * generates the mandanten table(s)
  */
-class m010101_100001_activtiy extends Migration
+class m010101_100001_activity extends Migration
 {
     public function up()
     {
@@ -51,7 +51,7 @@ class m010101_100001_activtiy extends Migration
             'deleted_at'            => Schema::TYPE_INTEGER . ' DEFAULT NULL'
         ),$tableOptions);
 
-        $this->createIndex('IX_net_frenzel_activity_entity', '{{%net_frenzel_activity}}', ['entity']);
+        $this->createIndex('IX_net_frenzel_activity_entity', '{{%net_frenzel_activity}}', ['entity','entity_id']);
     }
 
     public function down()

@@ -1,6 +1,6 @@
 <?php
 
-namespace net\frenzel\comment\controllers;
+namespace net\frenzel\activity\controllers;
 
 /**
  * @author Philipp Frenzel <philipp@frenzel.net> 
@@ -13,7 +13,7 @@ use yii\web\HttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 
-use \net\frenzel\comment\models\Comment;
+use \net\frenzel\activtiy\models\Activity;
 
 /**
  * Default Controller
@@ -42,7 +42,7 @@ class DefaultController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Comment(['scenario' => 'create']);
+        $model = new Activity(['scenario' => 'create']);
         Yii::$app->response->format = Response::FORMAT_JSON;
         if ($model->load(Yii::$app->request->post())) {
             if ($model->validate()) {
@@ -50,7 +50,7 @@ class DefaultController extends Controller
                     return $this->tree($model);
                 } else {
                     Yii::$app->response->setStatusCode(500);
-                    return \Yii::t('comment', 'FRONTEND_FLASH_FAIL_CREATE');
+                    return \Yii::t('net_frenzel_activity', 'FRONTEND_FLASH_FAIL_CREATE');
                 }
             } elseif (Yii::$app->request->isAjax) {
                 Yii::$app->response->setStatusCode(400);
@@ -62,7 +62,7 @@ class DefaultController extends Controller
     /**
      * Update comment.
      *
-     * @param integer $id Comment ID
+     * @param integer $id Activity ID
      * @return mixed
      */
     public function actionUpdate($id)
@@ -76,7 +76,7 @@ class DefaultController extends Controller
                     return $model->text;
                 } else {
                     Yii::$app->response->setStatusCode(500);
-                    return \Yii::t('comment', 'FRONTEND_FLASH_FAIL_UPDATE');
+                    return \Yii::t('net_frenzel_activity', 'FRONTEND_FLASH_FAIL_UPDATE');
                 }
             } elseif (Yii::$app->request->isAjax) {
                 Yii::$app->response->setStatusCode(400);
@@ -94,10 +94,10 @@ class DefaultController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         if ($this->findModel($id)->deleteComment()) {
-            return \Yii::t('comment', 'FRONTEND_WIDGET_COMMENTS_DELETED_COMMENT_TEXT');
+            return \Yii::t('net_frenzel_activity', 'FRONTEND_WIDGET_COMMENTS_DELETED_COMMENT_TEXT');
         } else {
             Yii::$app->response->setStatusCode(500);
-            return \Yii::t('comment', 'FRONTEND_FLASH_FAIL_DELETE');
+            return \Yii::t('net_frenzel_activity', 'FRONTEND_FLASH_FAIL_DELETE');
         }
     }
 
@@ -111,11 +111,11 @@ class DefaultController extends Controller
     protected function findModel($id)
     {
         /** @var Comment $model */
-        $model = Comment::findOne($id);
+        $model = Activity::findOne($id);
         if ($model !== null) {
             return $model;
         } else {
-            throw new HttpException(404, \Yii::t('comment', 'FRONTEND_FLASH_RECORD_NOT_FOUND'));
+            throw new HttpException(404, \Yii::t('net_frenzel_activity', 'FRONTEND_FLASH_RECORD_NOT_FOUND'));
         }
     }
 
@@ -126,7 +126,7 @@ class DefaultController extends Controller
      */
     protected function tree($model)
     {
-        $models = Comment::getTree($model->entity_id, $model->entity);
+        $models = Activity::getTree($model->entity_id, $model->entity);
         return $this->renderPartial('@net/frenzel/comment/views/widgets/views/_index_item', ['models' => $models]);
     }
 }

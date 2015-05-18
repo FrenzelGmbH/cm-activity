@@ -1,6 +1,6 @@
 <?php
 
-namespace net\frenzel\comment\models;
+namespace net\frenzel\activity\models;
 
 /**
  * @author Philipp Frenzel <philipp@frenzel.net> 
@@ -27,19 +27,42 @@ namespace net\frenzel\comment\models;
  * @method scope\CommentQuery hasMany(string $class, array $link) see BaseActiveRecord::hasMany() for more info
  * @method scope\CommentQuery hasOne(string $class, array $link) see BaseActiveRecord::hasOne() for more info
  */
-class Comment extends \yii\db\ActiveRecord
+class Activity extends \yii\db\ActiveRecord
 {
-    /**
-     * @var null|array|\yii\db\ActiveRecord[] Comment children
-     */
-    protected $_children;
+    const TYPE_CALL = 1;
+    const TYPE_MAIL = 2;
+    const TYPE_SMS = 3;
+    const TYPE_POST = 4;
+    const TYPE_FAX = 5;
+    const TYPE_SOCIAL = 6;
+    const TYPE_IM = 7;
+    const TYPE_APPOINTMENT = 8;
     
+    public static $activityTypes = [
+        self::TYPE_CALL => 'Call',
+        self::TYPE_MAIL => 'Mail',
+        self::TYPE_SMS => 'SMS',
+        self::TYPE_POST => 'Post',
+        self::TYPE_FAX => 'Fax',
+        self::TYPE_SOCIAL => 'Social Network',
+        self::TYPE_IM => 'Instant Messanger',
+        self::TYPE_APPOINTMENT => 'Appointment'
+    ];
+    
+    public function getTypeAsString()
+    {
+        if(isset(self::$activityTypes[$this->type]))
+            return self::$activityTypes[$this->type];
+        return 'ERROR, pls. contact support!';
+    }
+
+
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return '{{%comment}}';
+        return '{{%net_frenzel_activity}}';
     }
 
     /**
@@ -59,7 +82,7 @@ class Comment extends \yii\db\ActiveRecord
     public function scenarios()
     {
         return [
-            'create' => ['parent_id', 'entity', 'entity_id', 'text'],
+            'create' => ['parent_id', 'entity', 'entity_id', 'text', 'type'],
             'update' => ['text'],
         ];
     }
@@ -72,7 +95,7 @@ class Comment extends \yii\db\ActiveRecord
         return [
             [['text'], 'required'],
             [['text','entity'], 'string'],
-            [['created_by', 'updated_by', 'created_at', 'updated_at','deleted_at','entity_id','parent_id'], 'integer'],
+            [['created_by', 'updated_by', 'created_at', 'updated_at','deleted_at','next_at','next_by','entity_id','parent_id'], 'integer'],
         ];
     }
 
@@ -98,49 +121,8 @@ class Comment extends \yii\db\ActiveRecord
      */
     public function getAuthor()
     {
-        $Module = \Yii::$app->getModule('comment');
+        $Module = \Yii::$app->getModule('activtiy');
         return $this->hasOne($Module->userIdentityClass, ['id' => 'created_by']);
-    }
-
-    /**
-     * Get comments tree.
-     *
-     * @param integer $model Model ID
-     * @param integer $class Model class ID
-     *
-     * @return array|\yii\db\ActiveRecord[] Comments tree
-     */
-    public static function getTree($model, $class)
-    {
-        $models = self::find()->where([
-            'entity_id' => $model,
-            'entity' => $class,
-            'deleted_at' => NULL,
-        ])->orderBy(['parent_id' => 'DESC', 'created_at' => 'DESC'])->with(['author'])->all();
-        if ($models !== null) {
-            $models = self::buildTree($models);
-        }
-        return $models;
-    }
-
-    /**
-     * Build comments tree.
-     *
-     * @param array $data Records array
-     * @param int $rootID parent_id Root ID
-     * @return array|\yii\db\ActiveRecord[] Comments tree
-     */
-    protected static function buildTree(&$data, $rootID = 0)
-    {
-        $tree = [];
-        foreach ($data as $id => $node) {
-            if ($node->parent_id == $rootID) {
-                unset($data[$id]);
-                $node->children = self::buildTree($data, $node->id);
-                $tree[] = $node;
-            }
-        }
-        return $tree;
     }
     
     /**
@@ -148,31 +130,11 @@ class Comment extends \yii\db\ActiveRecord
      *
      * @return boolean Whether comment was deleted or not
      */
-    public function deleteComment()
+    public function deleteActivity()
     {
         $this->touch('deleted_at');
         $this->text = '';
         return $this->save(false, ['deleted_at', 'text']);
-    }
-
-    /**
-     * $_children getter.
-     *
-     * @return null|array|]yii\db\ActiveRecord[] Comment children
-     */
-    public function getChildren()
-    {
-        return $this->_children;
-    }
-    
-    /**
-     * $_children setter.
-     *
-     * @param array|\yii\db\ActiveRecord[] $value Comment children
-     */
-    public function setChildren($value)
-    {
-        $this->_children = $value;
     }
 
     /**
@@ -188,11 +150,11 @@ class Comment extends \yii\db\ActiveRecord
         /** @var ActiveRecord $class */
         $class = Model::findIdentity($this->model_class);
         if ($class === null) {
-            $this->addError($attribute, \Yii::t('comments', 'ERROR_MSG_INVALID_MODEL_ID'));
+            $this->addError($attribute, \Yii::t('net_frenzel_activity', 'ERROR_MSG_INVALID_MODEL_ID'));
         } else {
             $model = $class->name;
             if ($model::find()->where(['id' => $this->model_id]) === false) {
-                $this->addError($attribute, \Yii::t('comments', 'ERROR_MSG_INVALID_MODEL_ID'));
+                $this->addError($attribute, \Yii::t('net_frenzel_activity', 'ERROR_MSG_INVALID_MODEL_ID'));
             }
         }
     }
