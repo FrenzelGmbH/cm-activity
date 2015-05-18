@@ -7,13 +7,13 @@ namespace net\frenzel\activity\models;
  */
 
 /**
- * Class Comment
- * @package net\frenzel\comment\models
+ * Class Activity
+ * @package net\frenzel\activity\models
  *
  * @property integer $id
  * @property string $entity
  * @property integer $entity_id
- * @property integer $parent_id
+ * @property integer $type
  * @property string $text
  * @property integer $deleted
  * @property integer $created_by
@@ -48,12 +48,35 @@ class Activity extends \yii\db\ActiveRecord
         self::TYPE_IM => 'Instant Messanger',
         self::TYPE_APPOINTMENT => 'Appointment'
     ];
+
+    public static $activityTypesIcons = [
+        self::TYPE_CALL => 'phone-square',
+        self::TYPE_MAIL => 'send',
+        self::TYPE_SMS => 'mobile',
+        self::TYPE_POST => 'truck',
+        self::TYPE_FAX => 'fax',
+        self::TYPE_SOCIAL => 'twitter',
+        self::TYPE_IM => 'skype',
+        self::TYPE_APPOINTMENT => 'calendar'
+    ];
     
     public function getTypeAsString()
     {
         if(isset(self::$activityTypes[$this->type]))
             return self::$activityTypes[$this->type];
         return 'ERROR, pls. contact support!';
+    }
+
+    public function getTypeAsIcon()
+    {
+        if(isset(self::$activityTypesIcons[$this->type]))
+            return self::$activityTypesIcons[$this->type];
+        return 'asterisk';
+    }
+
+    public static function getTypeArray()
+    {
+        return self::$activityTypes;
     }
 
 
@@ -82,7 +105,7 @@ class Activity extends \yii\db\ActiveRecord
     public function scenarios()
     {
         return [
-            'create' => ['parent_id', 'entity', 'entity_id', 'text', 'type'],
+            'create' => ['type', 'entity', 'entity_id', 'text', 'type'],
             'update' => ['text'],
         ];
     }
@@ -95,7 +118,7 @@ class Activity extends \yii\db\ActiveRecord
         return [
             [['text'], 'required'],
             [['text','entity'], 'string'],
-            [['created_by', 'updated_by', 'created_at', 'updated_at','deleted_at','next_at','next_by','entity_id','parent_id'], 'integer'],
+            [['created_by', 'updated_by', 'created_at', 'updated_at','deleted_at','next_at','next_by','entity_id','type'], 'integer'],
         ];
     }
 
@@ -108,6 +131,7 @@ class Activity extends \yii\db\ActiveRecord
             'id' => \Yii::t('app', 'ID'),
             'text' => \Yii::t('app', 'Text'),
             'entity' => \Yii::t('app', 'Entity'),
+            'type' => \Yii::t('app', 'Type'),
             'created_by' => \Yii::t('app', 'Created by'),
             'updated_by' => \Yii::t('app', 'Updated by'),
             'created_at' => \Yii::t('app', 'Created at'),
@@ -121,7 +145,7 @@ class Activity extends \yii\db\ActiveRecord
      */
     public function getAuthor()
     {
-        $Module = \Yii::$app->getModule('activtiy');
+        $Module = \Yii::$app->getModule('activity');
         return $this->hasOne($Module->userIdentityClass, ['id' => 'created_by']);
     }
     
@@ -135,6 +159,16 @@ class Activity extends \yii\db\ActiveRecord
         $this->touch('deleted_at');
         $this->text = '';
         return $this->save(false, ['deleted_at', 'text']);
+    }
+
+    public static function getActivities($model, $class)
+    {
+        $models = self::find()->where([
+            'entity_id' => $model,
+            'entity' => $class
+        ])->orderBy('{{%net_frenzel_activity}}.created_at DESC')->with(['author'])->all();
+
+        return $models;
     }
 
     /**

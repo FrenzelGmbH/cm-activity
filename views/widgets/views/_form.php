@@ -7,21 +7,30 @@
  */
 use yii\helpers\Html;
 ?>
-<?= Html::beginForm(['/comment/default/create'], 'POST', ['class' => 'form-horizontal', 'data-comment' => 'form', 'data-comment-action' => 'create']) ?>
-    <div class="form-group" data-comment="form-group">
-        <div class="col-sm-10">
-        	<?= net\frenzel\textareaautosize\yii2textareaautosize::widget([
+
+<?= Html::beginForm(
+    ['/activity/default/create'], 
+    'POST', 
+    [
+        'class' => 'form-horizontal', 
+        'data-activity' => 'form', 
+        'data-activity-action' => 'create'
+    ]
+) ?>
+<?= Html::activeRadioList($model, 'type', $model->TypeArray); ?>
+    <div class="form-group" data-activity="form-group">
+        <div class="col-sm-9">
+            <?= net\frenzel\textareaautosize\yii2textareaautosize::widget([
 			      'model'=> $model,
-			      'attribute' => 'text',			      
+			      'attribute' => 'text'
 			  ]);
         	?>
-            <?= Html::error($model, 'text', ['data-comment' => 'form-summary', 'class' => 'help-block hidden']) ?>
+            <?= Html::error($model, 'text', ['data-activity' => 'form-summary', 'class' => 'help-block hidden']) ?>
         </div>
-        <div class="col-sm-2">
-        	<?= Html::submitButton(\Yii::t('comment', 'senden'), ['class' => 'btn btn-primary']); ?>
+        <div class="col-sm-3">
+        	<?= Html::submitButton('<i class="fa fa-check"></i> ' . \Yii::t('net_frenzel_activity', 'send '), ['class' => 'btn btn-default btn-block']); ?>
         </div>
     </div>
-<?= Html::activeHiddenInput($model, 'parent_id', ['data-comment' => 'parent-id']) ?>
 <?= Html::activeHiddenInput($model, 'entity') ?>
 <?= Html::activeHiddenInput($model, 'entity_id') ?>
 <?= Html::endForm(); ?>

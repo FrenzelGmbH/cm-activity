@@ -13,7 +13,7 @@ use yii\web\HttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 
-use \net\frenzel\activtiy\models\Activity;
+use \net\frenzel\activity\models\Activity;
 
 /**
  * Default Controller
@@ -93,7 +93,7 @@ class DefaultController extends Controller
     public function actionDelete($id)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        if ($this->findModel($id)->deleteComment()) {
+        if ($this->findModel($id)->deleteActivity()) {
             return \Yii::t('net_frenzel_activity', 'FRONTEND_WIDGET_COMMENTS_DELETED_COMMENT_TEXT');
         } else {
             Yii::$app->response->setStatusCode(500);
@@ -126,7 +126,7 @@ class DefaultController extends Controller
      */
     protected function tree($model)
     {
-        $models = Activity::getTree($model->entity_id, $model->entity);
-        return $this->renderPartial('@net/frenzel/comment/views/widgets/views/_index_item', ['models' => $models]);
+        $models = Activity::getActivities($model->entity_id, $model->entity);
+        return $this->renderPartial('@net/frenzel/activity/views/widgets/views/_index_item', ['models' => $models]);
     }
 }

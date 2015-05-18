@@ -8,7 +8,7 @@ Add in 'composer.json':
 ```
 {
     "require": {
-        "frenzelgmbh/cm-activity": "*"
+        "frenzelgmbh/cm-activity": "*" 
     }
 }
 ```
@@ -22,6 +22,7 @@ return [
         // ...
         'activity' => [
             'class' => 'net\frenzel\activity\Module',
+            'userIdentityClass' => 'app\models\User',
         ]
     ],
     // ... //
