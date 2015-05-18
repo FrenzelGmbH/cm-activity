@@ -18,16 +18,28 @@ class m010101_100001_activtiy extends Migration
             case 'pgsql':
               $tableOptions = null;
               break;
+            case 'mssql':
+              $tableOptions = null;
+              break;
             default:
               throw new RuntimeException('Your database is not supported!');
         }
 
         $this->createTable('{{%net_frenzel_activity}}',array(
             'id'                    => Schema::TYPE_PK,
+            
+            //related to which record
             'entity'                => Schema::TYPE_STRING,
             'entity_id'             => Schema::TYPE_INTEGER . ' NOT NULL',
+            
+            //content and content type
             'text'                  => Schema::TYPE_TEXT,
-            'parent_id'             => Schema::TYPE_INTEGER . ' DEFAULT NULL',
+            'type'                  => Schema::TYPE_INTEGER . ' DEFAULT 1',
+            
+            //action plan
+            'next_type'             => Schema::TYPE_INTEGER . ' DEFAULT 1',
+            'next_at'               => Schema::TYPE_INTEGER . ' DEFAULT NULL',
+            'next_by'               => Schema::TYPE_INTEGER . ' DEFAULT NULL',
             
             // blamable
             'created_by'            => Schema::TYPE_INTEGER . ' NOT NULL',
@@ -39,7 +51,7 @@ class m010101_100001_activtiy extends Migration
             'deleted_at'            => Schema::TYPE_INTEGER . ' DEFAULT NULL'
         ),$tableOptions);
 
-        $this->createIndex('IX_activity_entity', '{{%net_frenzel_activity}}', ['entity']);
+        $this->createIndex('IX_net_frenzel_activity_entity', '{{%net_frenzel_activity}}', ['entity']);
     }
 
     public function down()

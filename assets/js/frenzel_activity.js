@@ -1,107 +1,105 @@
-//from https://raw.githubusercontent.com/vova07/yii2-start-comments-module/master/assets/js/comments.js
-
 (function ($) {
-    // Comment plugin
-    $.comment = function (method) {
+    // activity plugin
+    $.activity = function (method) {
         if (methods[method]) {
             return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
         } else if (typeof method === 'object' || !method) {
             return methods.init.apply(this, arguments);
         } else {
-            $.error('Method ' + method + ' does not exist on jQuery.comment');
+            $.error('Method ' + method + ' does not exist on jQuery.activity');
             return false;
         }
     };
 
     // Default settings
     var defaults = {
-        listSelector: '[data-comment="list"]',
-        parentSelector: '[data-comment="parent"]',
-        appendSelector: '[data-comment="append"]',
-        formSelector: '[data-comment="form"]',
-        contentSelector: '[data-comment="content"]',
-        toolsSelector: '[data-comment="tools"]',
-        formGroupSelector: '[data-comment="form-group"]',
-        errorSummarySelector: '[data-comment="form-summary"]',
+        listSelector: '[data-activity="list"]',
+        parentSelector: '[data-activity="parent"]',
+        appendSelector: '[data-activity="append"]',
+        formSelector: '[data-activity="form"]',
+        contentSelector: '[data-activity="content"]',
+        toolsSelector: '[data-activity="tools"]',
+        formGroupSelector: '[data-activity="form-group"]',
+        errorSummarySelector: '[data-activity="form-summary"]',
         errorSummaryToggleClass: 'hidden',
         errorClass: 'has-error',
         offset: 0
     };
 
-    // Edit the comment
-    $(document).on('click', '[data-comment="update"]', function (evt) {
+    // Edit the activity
+    $(document).on('click', '[data-activity="update"]', function (evt) {
         evt.preventDefault();
 
-        $.comment('createForm');
+        $.activity('createForm');
 
-        var data = $.data(document, 'comment'),
+        var data = $.data(document, 'activity'),
             $this = $(this),
             $form = data.clone,
             $append = $this.parents(data.appendSelector),
             content = $append.find(data.contentSelector).text();
 
-        $form.attr('action', $this.data('comment-url'));
-        $form.attr('data-comment-action', 'update');
-        $form.attr('data-comment-id', $this.data('comment-id'));
+        $form.attr('action', $this.data('activity-url'));
+        $form.attr('data-activity-action', 'update');
+        $form.attr('data-activity-id', $this.data('activity-id'));
         $form.find('textarea').text(content);
 
 
         $append.append($form);
     });
 
-    // Reply to comment
-    $(document).on('click', '[data-comment="reply"]', function (evt) {
+    // Reply to activity
+    $(document).on('click', '[data-activity="reply"]', function (evt) {
         evt.preventDefault();
 
-        $.comment('createForm');
+        $.activity('createForm');
 
-        var data = $.data(document, 'comment'),
+        var data = $.data(document, 'activity'),
             $this = $(this),
             $form = data.clone,
             $append = $this.parents(data.appendSelector);
 
-        $form.attr('action', $this.data('comment-url'));
-        $form.attr('data-comment-action', 'reply');
-        $form.find('[data-comment="parent-id"]').val($this.data('comment-id'));
+        $form.attr('action', $this.data('activity-url'));
+        $form.attr('data-activity-action', 'reply');
+        $form.find('[data-activity="parent-id"]').val($this.data('activity-id'));
 
         $append.append($form);
     });
 
-    // Delete comment
-    $(document).on('click', '[data-comment="delete"]', function (evt) {
+    // Delete activity
+    $(document).on('click', '[data-activity="delete"]', function (evt) {
         evt.preventDefault();
 
-        var data = $.data(document, 'comment'),
+        var data = $.data(document, 'activity'),
             $this = $(this);
 
-        if (confirm($this.data('comment-confirm'))) {
+        if (confirm($this.data('activity-confirm'))) {
             $.ajax({
-                url: $this.data('comment-url'),
+                url: $this.data('activity-url'),
                 type: 'DELETE',
                 error: function (xhr, status, error) {
                     alert('error');
                 },
                 success: function (result, status, xhr) {
                     console.log(result);
-                    console.log($this.parents('[data-comment="parent"][data-comment-id="' + $this.data('comment-id') + '"]'));
-                    $this.parents('[data-comment="parent"][data-comment-id="' + $this.data('comment-id') + '"]').find(data.contentSelector).text(result);
+                    console.log($this.parents('[data-activity="parent"][data-activity-id="' + $this.data('activity-id') + '"]'));
+                    $this.parents('[data-activity="parent"][data-activity-id="' + $this.data('activity-id') + '"]').find(data.contentSelector).text(result);
                     $this.parents(data.toolsSelector).remove();
                 }
             });
         }
     });
 
-    // Scroll to parent comment
-    $(document).on('click', '[data-comment="ancor"]', function (evt) {
+    // Scroll to parent activity
+    $(document).on('click', '[data-activity="ancor"]', function (evt) {
         evt.preventDefault();
-        $.comment('scrollTo', $(this).data('comment-parent'));
+        $.activity('scrollTo', $(this).data('activity-parent'));
     });
 
     // AJAX updating form submit
-    $(document).on('submit', '[data-comment-action="update"]', function (evt) {
+    $(document).on('submit', '[data-activity-action="update"]', function (evt) {
         evt.preventDefault();
 
-        var data = $.data(document, 'comment'),
+        var data = $.data(document, 'activity'),
             $this = $(this);
 
         $.ajax({
@@ -116,23 +114,23 @@
             },
             error: function (xhr, status, error) {
                 if (xhr.status === 400) {
-                    $.comment('updateErrors', $this, xhr.responseJSON);
+                    $.activity('updateErrors', $this, xhr.responseJSON);
                 } else {
                     alert(error);
                 }
             },
             success: function (response, status, xhr) {
-                $this.parents('[data-comment="parent"][data-comment-id="' + $this.data('comment-id') + '"]').find(data.contentSelector).text(response);
-                $.comment('removeForm');
+                $this.parents('[data-activity="parent"][data-activity-id="' + $this.data('activity-id') + '"]').find(data.contentSelector).text(response);
+                $.activity('removeForm');
             }
         });
     });
 
     // AJAX reply form submit
-    $(document).on('submit', '[data-comment-action="reply"]', function (evt) {
+    $(document).on('submit', '[data-activity-action="reply"]', function (evt) {
         evt.preventDefault();
 
-        var data = $.data(document, 'comment'),
+        var data = $.data(document, 'activity'),
             $this = $(this);
 
         $.ajax({
@@ -147,23 +145,23 @@
             },
             error: function (xhr, status, error) {
                 if (xhr.status === 400) {
-                    $.comment('updateErrors', $this, xhr.responseJSON);
+                    $.activity('updateErrors', $this, xhr.responseJSON);
                 } else {
                     alert(error);
                 }
             },
             success: function (response, status, xhr) {
                 $(data.listSelector).html(response);
-                $.comment('removeForm');
+                $.activity('removeForm');
             }
         });
     });
 
     // AJAX create form submit
-    $(document).on('submit', '[data-comment-action="create"]', function (evt) {
+    $(document).on('submit', '[data-activity-action="create"]', function (evt) {
         evt.preventDefault();
 
-        var data = $.data(document, 'comment'),
+        var data = $.data(document, 'activity'),
             $this = $(this);
 
         $.ajax({
@@ -178,14 +176,14 @@
             },
             error: function (xhr, status, error) {
                 if (xhr.status === 400) {
-                    $.comment('updateErrors', $this, xhr.responseJSON);
+                    $.activity('updateErrors', $this, xhr.responseJSON);
                 } else {
                     alert(error);
                 }
             },
             success: function (response, status, xhr) {
                 $(data.listSelector).html(response);
-                $.comment('clearErrors', $this);
+                $.activity('clearErrors', $this);
                 $this.trigger('reset');
             }
         });
@@ -194,51 +192,51 @@
     // Methods
     var methods = {
         init: function (options) {
-            if ($.data(document, 'comment') !== undefined) {
+            if ($.data(document, 'activity') !== undefined) {
                 return;
             }
 
             // Set plugin data
-            $.data(document, 'comment', $.extend({}, defaults, options || {}));
+            $.data(document, 'activity', $.extend({}, defaults, options || {}));
 
             return this;
         },
         destroy: function () {
-            $(document).unbind('.comment');
-            $(document).removeData('comment');
+            $(document).unbind('.activity');
+            $(document).removeData('activity');
         },
         data: function () {
-            return $.data(document, 'comment');
+            return $.data(document, 'activity');
         },
         createForm: function () {
-            var data = $.data(document, 'comment'),
+            var data = $.data(document, 'activity'),
                 $form = $(data.formSelector),
                 $clone = $form.clone();
 
             methods.removeForm();
 
             $clone.removeAttr('id');
-            $clone.attr('data-comment', 'js-form');
+            $clone.attr('data-activity', 'js-form');
 
             data.clone = $clone;
         },
         removeForm: function () {
-            var data = $.data(document, 'comment');
+            var data = $.data(document, 'activity');
 
             if (data.clone !== undefined) {
-                $('[data-comment="js-form"]').remove();
+                $('[data-activity="js-form"]').remove();
                 data.clone = undefined;
             }
         },
         scrollTo: function (id) {
-            var data = $.data(document, 'comment'),
-                topScroll = $('[data-comment="parent"][data-comment-id="' + id + '"]').offset().top;
+            var data = $.data(document, 'activity'),
+                topScroll = $('[data-activity="parent"][data-activity-id="' + id + '"]').offset().top;
             $('body, html').animate({
                 scrollTop: topScroll - data.offset
             }, 500);
         },
         updateErrors: function ($form, response) {
-            var data = $.data(document, 'comment'),
+            var data = $.data(document, 'activity'),
                 message = '';
 
             $.each(response, function (id, msg) {
@@ -249,7 +247,7 @@
             $form.find(data.errorSummarySelector).toggleClass(data.errorSummaryToggleClass).text(message);
         },
         clearErrors: function ($form) {
-            var data = $.data(document, 'comment');
+            var data = $.data(document, 'activity');
 
             $form.find('.' + data.errorClass).removeClass(data.errorClass);
             $form.find(data.errorSummarySelector).toggleClass(data.errorSummaryToggleClass).text('');
