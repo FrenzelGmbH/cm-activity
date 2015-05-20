@@ -24,7 +24,7 @@ use kartik\widgets\Select2;
     ]
 ) ?>
 
-<div class="form-group" data-activity="form-group">
+<div class="row" data-activity="form-group">
     <div class="col-sm-12">
     <div class="col-sm-12"><?= \Yii::t('net_frenzel_activity','Now'); ?>:
         <?= $form->field($model, 'type')->radioButtonGroup($model->TypeArray,[
