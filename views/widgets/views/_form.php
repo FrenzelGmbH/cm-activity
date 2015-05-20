@@ -6,6 +6,7 @@
  * @var \net\frenzel\comment\models\frontend\Comment $model New comment model
  */
 use yii\helpers\Html;
+use kartik\datetime\DateTimePicker;
 ?>
 
 <?= Html::beginForm(
@@ -17,20 +18,68 @@ use yii\helpers\Html;
         'data-activity-action' => 'create'
     ]
 ) ?>
-<?= Html::activeRadioList($model, 'type', $model->TypeArray); ?>
-    <div class="form-group" data-activity="form-group">
-        <div class="col-sm-9">
-            <?= net\frenzel\textareaautosize\yii2textareaautosize::widget([
-			      'model'=> $model,
-			      'attribute' => 'text'
-			  ]);
-        	?>
-            <?= Html::error($model, 'text', ['data-activity' => 'form-summary', 'class' => 'help-block hidden']) ?>
-        </div>
-        <div class="col-sm-3">
-        	<?= Html::submitButton('<i class="fa fa-check"></i> ' . \Yii::t('net_frenzel_activity', 'send '), ['class' => 'btn btn-default btn-block']); ?>
-        </div>
+
+<div class="form-group" data-activity="form-group" id="form-activity-type-section">
+    <div class="col-sm-12"><?= \Yii::t('net_frenzel_activity','Now'); ?>:
+<?= Html::activeRadioList($model, 'type', $model->TypeArray,[
+    'tag' => 'div',
+    'item' => function($index, $label, $name, $checked, $value)
+    {
+        $return = '<label class="btn btn-info">';
+        $return .= '<input type="radio" name="' . $name . '" value="' . $value . '" tabindex="3">';
+        $return .= ' ' . $label;
+        $return .= '</label>';
+        return $return;
+    }
+]); ?>
     </div>
+</div>
+
+<div class="form-group" data-activity="form-group">
+    <div class="col-sm-12">
+        <?= net\frenzel\textareaautosize\yii2textareaautosize::widget([
+		      'model'=> $model,
+		      'attribute' => 'text'
+		  ]);
+    	?>
+        <?= Html::error($model, 'text', ['data-activity' => 'form-summary', 'class' => 'help-block hidden']) ?>
+    </div>
+</div>
+
+<div class="form-group" data-activity="form-group">
+        <div class="col-sm-4">
+    <?= \Yii::t('net_frenzel_activity','When'); ?>:
+<?= DateTimePicker::widget([
+    'model' => $model,
+    'attribute' => 'next_at',
+    'type' => DateTimePicker::TYPE_INPUT,
+    'pluginOptions' => [
+        'autoclose'=>true,
+        'format' => 'dd-M-yyyy hh:ii'
+    ]
+]); ?>
+    </div>
+    <div class="col-sm-8"><?= \Yii::t('net_frenzel_activity','What'); ?>:
+<?= Html::activeRadioList($model, 'next_type', $model->NextTypeArray,[
+    'tag' => 'div',
+    'item' => function($index, $label, $name, $checked, $value)
+    {
+        $return = '<label class="btn btn-primary">';
+        $return .= '<input type="radio" name="' . $name . '" value="' . $value . '" tabindex="3">';
+        $return .= ' ' . $label;
+        $return .= '</label>';
+        return $return;
+    }
+]); ?>
+    </div>    
+</div>
+
+<div class="form-group" data-activity="form-group">
+    <div class="col-sm-12">
+        <?= Html::submitButton('<i class="fa fa-check"></i> ' . \Yii::t('net_frenzel_activity', 'submit'), ['class' => 'btn btn-success btn-block']); ?>
+    </div>
+</div>
+
 <?= Html::activeHiddenInput($model, 'entity') ?>
 <?= Html::activeHiddenInput($model, 'entity_id') ?>
 <?= Html::endForm(); ?>

@@ -31,6 +31,7 @@ class DefaultController extends Controller
             'actions' => [
                 'create' => ['post'],
                 'update' => ['put', 'post'],
+                'fetch' =>  ['put', 'post', 'get'],
                 'delete' => ['post', 'delete']
             ]
         ];
@@ -38,7 +39,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * Create comment.
+     * Create activity.
      */
     public function actionCreate()
     {
@@ -60,7 +61,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * Update comment.
+     * Update activity.
      *
      * @param integer $id Activity ID
      * @return mixed
@@ -73,7 +74,7 @@ class DefaultController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             if ($model->validate()) {
                 if ($model->save(false)) {
-                    return $model->text;
+                    return $this->renderAjax('@vendor/frenzelgmbh/cm-activity/views/widgets/views/_index_single_item', ['model' => $model]);
                 } else {
                     Yii::$app->response->setStatusCode(500);
                     return \Yii::t('net_frenzel_activity', 'FRONTEND_FLASH_FAIL_UPDATE');
@@ -84,6 +85,21 @@ class DefaultController extends Controller
             }
         }
     }
+
+    /**
+     * fetch activity.
+     *
+     * @param integer $id Activity ID
+     * @return mixed
+     */
+    public function actionFetch($id)
+    {
+        $model = $this->findModel($id);
+        $model->setScenario('update');
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $model;
+    }
+
     /**
      * Delete comment page.
      *

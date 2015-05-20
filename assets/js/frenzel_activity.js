@@ -30,7 +30,7 @@
     $(document).on('click', '[data-activity="update"]', function (evt) {
         evt.preventDefault();
 
-        $.activity('createForm');
+        $.activity('createForm');        
 
         var data = $.data(document, 'activity'),
             $this = $(this),
@@ -38,31 +38,29 @@
             $append = $this.parents(data.appendSelector),
             content = $append.find(data.contentSelector).text();
 
-        $form.attr('action', $this.data('activity-url'));
-        $form.attr('data-activity-action', 'update');
-        $form.attr('data-activity-id', $this.data('activity-id'));
-        $form.find('textarea').text(content);
+        $.ajax({
+            url: $this.data('activity-fetch-url'),
+            type: 'PUT',
+            data: {"id" : $this.data('activity-id')},
+            error: function (xhr, status, error) {
+                alert(error);
+            },
+            success: function (response, status, xhr) {
+                var $activityModel = response;
+                
+                $form.attr('action', $this.data('activity-url'));
+                $form.attr('data-activity-action', 'update');
+                $form.attr('data-activity-id', $this.data('activity-id'));
+                $form.find('#form-activity-type-section').hide();
+                $form.find('textarea').text($activityModel.text);
+                $form.find('#activity-next_at').val($activityModel.next_at);
+                var test = $form.find('#activity-type');
+                $form.find('#activity-type').val([$activityModel.type]);
+                $form.find('#activity-next_type').val([$activityModel.next_type]);
 
-
-        $append.append($form);
-    });
-
-    // Reply to activity
-    $(document).on('click', '[data-activity="reply"]', function (evt) {
-        evt.preventDefault();
-
-        $.activity('createForm');
-
-        var data = $.data(document, 'activity'),
-            $this = $(this),
-            $form = data.clone,
-            $append = $this.parents(data.appendSelector);
-
-        $form.attr('action', $this.data('activity-url'));
-        $form.attr('data-activity-action', 'reply');
-        $form.find('[data-activity="parent-id"]').val($this.data('activity-id'));
-
-        $append.append($form);
+                $append.append($form);
+            }
+        });
     });
 
     // Delete activity
@@ -87,12 +85,6 @@
                 }
             });
         }
-    });
-
-    // Scroll to parent activity
-    $(document).on('click', '[data-activity="ancor"]', function (evt) {
-        evt.preventDefault();
-        $.activity('scrollTo', $(this).data('activity-parent'));
     });
 
     // AJAX updating form submit
@@ -120,38 +112,7 @@
                 }
             },
             success: function (response, status, xhr) {
-                $this.parents('[data-activity="parent"][data-activity-id="' + $this.data('activity-id') + '"]').find(data.contentSelector).text(response);
-                $.activity('removeForm');
-            }
-        });
-    });
-
-    // AJAX reply form submit
-    $(document).on('submit', '[data-activity-action="reply"]', function (evt) {
-        evt.preventDefault();
-
-        var data = $.data(document, 'activity'),
-            $this = $(this);
-
-        $.ajax({
-            url: $(this).attr('action'),
-            type: 'POST',
-            data: $(this).serialize(),
-            beforeSend: function (xhr, settings) {
-                $this.find('[type="submit"]').attr('disabled', true);
-            },
-            complete: function (xhr, status) {
-                $this.find('[type="submit"]').attr('disabled', false);
-            },
-            error: function (xhr, status, error) {
-                if (xhr.status === 400) {
-                    $.activity('updateErrors', $this, xhr.responseJSON);
-                } else {
-                    alert(error);
-                }
-            },
-            success: function (response, status, xhr) {
-                $(data.listSelector).html(response);
+                $this.parents('[data-activity="parent"][data-activity-id="' + $this.data('activity-id') + '"]').html(response);
                 $.activity('removeForm');
             }
         });
