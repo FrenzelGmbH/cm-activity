@@ -12,6 +12,7 @@ use yii\web\Controller;
 use yii\web\HttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
+use yii\db\Query;
 
 use \net\frenzel\activity\models\Activity;
 
@@ -43,7 +44,7 @@ class DefaultController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Activity(['scenario' => 'create']);
+        $model = new Activity(['scenario' => 'create']);        
         Yii::$app->response->format = Response::FORMAT_JSON;
         if ($model->load(Yii::$app->request->post())) {
             if ($model->validate()) {
@@ -145,5 +146,27 @@ class DefaultController extends Controller
     {
         $models = Activity::getActivities($model->entity_id, $model->entity);
         return $this->renderPartial('@net/frenzel/activity/views/widgets/views/_index_item', ['models' => $models]);
+    }
+
+    public function actionResponsibleList($q = null, $id = null)
+    {        
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $out = ['results' => ['id' => '', 'text' => '']];
+        if (!is_null($q)) {
+            $query = new Query;
+            $query->select('id, username AS text')
+                ->from('{{%user}}')
+                ->where('username LIKE "%' . $q .'%"')
+                ->limit(20);
+            $command = $query->createCommand();
+            $data = $command->queryAll();
+            $out['results'] = array_values($data);
+        }
+        elseif ($id > 0) {
+            $Module = \Yii::$app->getModule('activity');
+            $userModel = $Module->userIdentityClass;
+            $out['results'] = ['id' => $id, 'text' => $userModel::find($id)->username];
+        }
+        return $out;
     }
 }

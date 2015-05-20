@@ -51,6 +51,8 @@ class Activities extends Widget
         $model = new Activity(['scenario' => 'create']);
         $model->entity = $class;
         $model->entity_id = $this->model->id;
+        $model->type = Activity::TYPE_CALL;
+        $model->next_by = \Yii::$app->user->identity->id;
         return $this->render('index', [
             'models' => $models,
             'model' => $model

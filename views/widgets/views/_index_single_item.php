@@ -11,7 +11,7 @@ use yii\helpers\Url;
 <?php if ($model !== null) : ?>
     <div class="media" data-activity="parent" data-activity-id="<?= $model->id ?>">
         <div class="media-left">
-            <i class="fa fa-<?= $model->TypeAsIcon; ?> fa-3x text-warning"></i>
+            <i class="fa fa-<?= $model->TypeAsIcon; ?> fa-3x"></i>
         </div>
         <div class="media-body" data-activity="append">
             <div class="media-heading">
@@ -27,7 +27,7 @@ use yii\helpers\Url;
             <?php } ?>
             <?php
                 $nextResponsible = is_object($model->responsible)?$model->responsible->username:'EVERYONE';
-                echo '<i class="fa fa-hand-o-right fa-2x"></i> ' . $nextResponsible . ' should ' . $model->NextTypeAsString . ' at ' . \Yii::$app->formatter->asDateTime($model->next_at); ?>
+                echo '<i class="fa fa-hand-o-right fa-2x"></i> ' . $nextResponsible . ' has ' . $model->NextTypeAsString . ' at ' . \Yii::$app->formatter->asDateTime($model->next_at); ?>
             <?php if (is_null($model->deleted_at)) { ?>
                 <div data-activity="tools">
                     <?php if (Yii::$app->user->identity->isAdmin) { ?>
@@ -60,5 +60,6 @@ use yii\helpers\Url;
         <div class="media-right">
             <img src="http://gravatar.com/avatar/<?= $model->author->profile->gravatar_id ?>?s=50" alt="" class="img-rounded" />                
         </div>
+        <hr>
     </div>
 <?php endif; ?>
