@@ -4,6 +4,7 @@ namespace net\frenzel\activity\models;
 
 use yii\base\Event;
 
+use \DateTime;
 /**
  * @author Philipp Frenzel <philipp@frenzel.net> 
  */
@@ -133,7 +134,7 @@ class Activity extends \yii\db\ActiveRecord
     {
         return [
             'create' => ['type', 'entity', 'entity_id', 'text', 'type','next_type','next_at','next_by'],
-            'update' => ['text','next_type','next_at','next_by'],
+            'update' => ['type' ,'text','next_type','next_at','next_by'],
         ];
     }
 
@@ -145,7 +146,8 @@ class Activity extends \yii\db\ActiveRecord
         return [
             [['text'], 'required'],
             [['text','entity'], 'string'],
-            [['created_by', 'updated_by', 'created_at', 'updated_at','deleted_at','next_at','next_by','entity_id','type','next_type'], 'integer'],
+            [['next_at'], 'string'],
+            [['created_by', 'updated_by', 'created_at', 'updated_at','deleted_at','next_by','entity_id','type','next_type'], 'integer'],
         ];
     }
 
@@ -253,6 +255,10 @@ class Activity extends \yii\db\ActiveRecord
         {
             Event::trigger(self::className(),self::EVENT_ACTIVITY_UPDATE, new Event(['sender' => $this]));
             \Yii::trace('The Event '.self::EVENT_ACTIVITY_UPDATE.' should be fired, pls. check!');
+
+            $nextDate = new DateTime($this->next_at);
+            $this->next_at = $nextDate->format('U');
+
             return true;
         }
         return false;

@@ -34,9 +34,7 @@
 
         var data = $.data(document, 'activity'),
             $this = $(this),
-            $form = data.clone,
-            $append = $this.parents(data.appendSelector),
-            content = $append.find(data.contentSelector).text();
+            $append = $this.parents(data.appendSelector);
 
         $.ajax({
             url: $this.data('activity-fetch-url'),
@@ -46,19 +44,7 @@
                 alert(error);
             },
             success: function (response, status, xhr) {
-                var $activityModel = response;
-                
-                $form.attr('action', $this.data('activity-url'));
-                $form.attr('data-activity-action', 'update');
-                $form.attr('data-activity-id', $this.data('activity-id'));
-                $form.find('#form-activity-type-section').hide();
-                $form.find('textarea').text($activityModel.text);
-                $form.find('#activity-next_at').val($activityModel.next_at);
-                var test = $form.find('#activity-type');
-                $form.find('#activity-type').val([$activityModel.type]);
-                $form.find('#activity-next_type').val([$activityModel.next_type]);
-
-                $append.append($form);
+                $append.append(response);
             }
         });
     });
