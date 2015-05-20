@@ -107,6 +107,12 @@ class Activity extends \yii\db\ActiveRecord
         return $return;
     }
 
+    public function getNextTypeAsString()
+    {
+        if(isset(self::$activityTypes[$this->next_type]))
+            return self::$activityTypes[$this->next_type];
+        return 'ERROR, pls. contact support!';
+    }
 
     /**
      * @inheritdoc
@@ -180,6 +186,15 @@ class Activity extends \yii\db\ActiveRecord
         $Module = \Yii::$app->getModule('activity');
         return $this->hasOne($Module->userIdentityClass, ['id' => 'created_by']);
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getResponsible()
+    {
+        $Module = \Yii::$app->getModule('activity');
+        return $this->hasOne($Module->userIdentityClass, ['id' => 'next_by']);
+    }
     
     /**
      * Delete comment.
@@ -193,6 +208,12 @@ class Activity extends \yii\db\ActiveRecord
         return $this->save(false, ['deleted_at', 'text']);
     }
 
+    /**
+     * [getActivities description]
+     * @param  [type] $model [description]
+     * @param  [type] $class [description]
+     * @return [type]        [description]
+     */
     public static function getActivities($model, $class)
     {
         $models = self::find()->where([
@@ -258,6 +279,11 @@ class Activity extends \yii\db\ActiveRecord
 
             $nextDate = new DateTime($this->next_at);
             $this->next_at = $nextDate->format('U');
+
+            if(is_null($this->next_by))
+            {
+                $this->next_by = $this->created_by;
+            }
 
             return true;
         }

@@ -25,9 +25,9 @@ use yii\helpers\Url;
             <?php } else { ?>
                 <div class="content" data-activity="content"><?= $model->text ?></div>                        
             <?php } ?>
-            <?php if (!is_null($model->next_at)) { ?>
-                <?= \Yii::$app->formatter->asDateTime($model->next_at); ?>
-            <?php } ?>
+            <?php
+                $nextResponsible = is_object($model->responsible)?$model->responsible->username:'EVERYONE';
+                echo '<i class="fa fa-hand-o-right fa-2x"></i> ' . $nextResponsible . ' should ' . $model->NextTypeAsString . ' at ' . \Yii::$app->formatter->asDateTime($model->next_at); ?>
             <?php if (is_null($model->deleted_at)) { ?>
                 <div data-activity="tools">
                     <?php if (Yii::$app->user->identity->isAdmin) { ?>
