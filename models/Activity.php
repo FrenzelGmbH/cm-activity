@@ -19,7 +19,6 @@ use \DateTime;
  * @property integer $entity_id
  * @property integer $type
  * @property string $text
- * @property integer $deleted
  * @property integer $created_by
  * @property integer $updated_by
  * @property integer $created_at
