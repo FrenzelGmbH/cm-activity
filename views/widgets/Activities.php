@@ -75,6 +75,7 @@ class Activities extends Widget
             'model' => $model
         ]);
     }
+    
     /**
      * Register widget client scripts.
      */
