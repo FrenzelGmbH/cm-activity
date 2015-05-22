@@ -289,4 +289,42 @@ class Activity extends \yii\db\ActiveRecord
         }
         return false;
     }
+
+    /**
+     * returns the services between the given parameters as \yii2fullcalendar\models\Event
+     * @param  [type] $startDate [description]
+     * @param  [type] $endDate   [description]
+     * @return [type]            [description]
+     */
+    public static function getCalendarActivities($startDate,$endDate,$entity,$entity_id)
+    {
+        $events = null;
+
+        $startDateObj = new DateTime($startDate);
+        $startDateObj->modify('+1 month');
+        $endDateObj = new DateTime($endDate);
+        $endDateObj->modify('-1 month');
+
+        $activities = self::find()
+            ->where('next_at >= ' . (int)$endDateObj->getTimestamp() . ' AND next_at <= ' . (int)$startDateObj->getTimestamp())
+            ->all();
+
+        foreach($activities AS $acti)
+        {
+            $Event = new \yii2fullcalendar\models\Event();
+            $Event->id = $acti->entity_id;
+            $Event->title = $acti->NextTypeAsString;
+            $timeStamp = $acti->next_at;            
+            //$startObj = new DateTime();
+            $startObj = new DateTime(\Yii::$app->formatter->asDateTime($timeStamp));
+            $Event->start = $startObj->format('Y-m-d\TH:m:s\Z');
+            $endObj = clone $startObj;
+            $endObj->modify('+15 minutes');
+            $Event->end = $endObj->format('Y-m-d\TH:m:s\Z');
+            $Event->allDay = false;
+            $events[] = $Event;
+        }
+
+        return $events;
+    }
 }

@@ -169,4 +169,24 @@ class DefaultController extends Controller
         }
         return $out;
     }
+
+    /**
+     * Renders the activities inside a calendar... might be nicer to view
+     * @param  [type] $start [description]
+     * @param  [type] $end   [description]
+     * @param  [type] $_     [description]
+     * @return [type]        [description]
+     */
+    public function actionJsoncalendar($start=NULL,$end=NULL,$entity=NULL,$entity_id=NULL,$_=NULL){
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        if($start = null)
+        {
+            $startObj = new DateTime();
+            $start = $startObj->format('U');
+        }
+
+        $events = Activity::getCalendarActivities($start,$end,$entity,$entity_id);
+        return $events;
+    }
 }
