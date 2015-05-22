@@ -98,7 +98,7 @@ class DefaultController extends Controller
         $model = $this->findModel($id);
         $model->setScenario('update');
         Yii::$app->response->format = Response::FORMAT_HTML;
-        $model->next_at = !is_null($model->next_at)?\Yii::$app->formatter->asDateTime($model->next_at):$model->next_at;
+        $model->next_at = !is_null($model->next_at)?\Yii::$app->formatter->asDateTime($model->next_at,'yyyy-MM-dd hh:mm'):$model->next_at;
         return $this->renderAjax('@vendor/frenzelgmbh/cm-activity/views/widgets/views/_form_update', ['model' => $model]);
     }
 
