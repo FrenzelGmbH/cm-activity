@@ -25,6 +25,9 @@ class CoreAsset extends AssetBundle
         'js/frenzel_activity.js'
     ];
 
+    /**
+     * @inheritdoc
+     */
     public $css = [
         'css/frenzel_activity.css'
     ];
