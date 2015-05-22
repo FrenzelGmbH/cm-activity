@@ -3,6 +3,7 @@
 namespace net\frenzel\activity\models;
 
 use yii\base\Event;
+use yii\helpers\ArrayHelper;
 
 use \DateTime;
 /**
@@ -70,12 +71,17 @@ class Activity extends \yii\db\ActiveRecord
         self::TYPE_IM => 'skype',
         self::TYPE_APPOINTMENT => 'calendar'
     ];
+
+    public static function getTypeArray()
+    {
+        return self::$activityTypes;
+    }
     
     public function getTypeAsString()
     {
         if(isset(self::$activityTypes[$this->type]))
             return self::$activityTypes[$this->type];
-        return 'ERROR, pls. contact support!';
+        return 'finished!';
     }
 
     public function getTypeAsIcon()
@@ -85,6 +91,12 @@ class Activity extends \yii\db\ActiveRecord
         return 'asterisk';
     }
 
+    /**
+     * customNextTypes allow the module user to add results by what he needs...
+     * @var array
+     */
+    public $customNextTypes = [];
+
     public function getNextTypeAsIcon()
     {
         if(isset(self::$activityTypesIcons[$this->next_type]))
@@ -92,26 +104,25 @@ class Activity extends \yii\db\ActiveRecord
         return 'asterisk';
     }
 
-    public static function getTypeArray()
-    {
-        return self::$activityTypes;
-    }
-
     public function getNextTypeArray()
     {
         $return = [];
+        $nextTypes = self::$activityTypes;
+        $allNextTypes = ArrayHelper::merge($nextTypes, $this->customNextTypes);
         foreach($this->allowed_next_type AS $key)
         {
-            $return[$key] = self::$activityTypes[$key];
+            $return[$key] = $allNextTypes[$key];
         }
         return $return;
     }
 
     public function getNextTypeAsString()
     {
-        if(isset(self::$activityTypes[$this->next_type]))
-            return self::$activityTypes[$this->next_type];
-        return 'ERROR, pls. contact support!';
+        $nextTypes = self::$activityTypes;
+        $allNextTypes = ArrayHelper::merge($nextTypes, $this->customNextTypes);
+        if(isset($allNextTypes[$this->next_type]))
+            return $allNextTypes[$this->next_type];
+        return 'finished!';
     }
 
     /**

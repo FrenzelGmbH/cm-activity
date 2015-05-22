@@ -22,6 +22,18 @@ class Activities extends Widget
      * @var \yii\db\ActiveRecord|null Widget model
      */
     public $model;
+
+    /**
+     * which user defined nextTypes are allowed within the rendered widget
+     * @var null
+     */
+    public $customNextTypes = NULL;
+
+    /**
+     * which are the allowed next types
+     * @var null
+     */
+    public $allowedNextTypes = NULL;
     
     /**
      * @var array comment Javascript plugin options
@@ -49,6 +61,11 @@ class Activities extends Widget
         $class = $class::className();
         $models = Activity::getActivities($this->model->id, $class);
         $model = new Activity(['scenario' => 'create']);
+        $model->customNextTypes = $this->customNextTypes;
+        if(!is_null($this->allowedNextTypes))
+        {
+            $model->allowed_next_type = $this->allowedNextTypes;
+        }
         $model->entity = $class;
         $model->entity_id = $this->model->id;
         $model->type = Activity::TYPE_CALL;
