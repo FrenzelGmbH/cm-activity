@@ -41,7 +41,7 @@ class m010101_100001_activity extends Migration
             'next_at'               => Schema::TYPE_INTEGER . ' DEFAULT NULL',
             'next_by'               => Schema::TYPE_INTEGER . ' DEFAULT NULL',
             
-            // blamable
+            //blamable
             'created_by'            => Schema::TYPE_INTEGER . ' NOT NULL',
             'updated_by'            => Schema::TYPE_INTEGER . ' NOT NULL',
             
