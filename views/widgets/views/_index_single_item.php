@@ -47,7 +47,7 @@ use yii\helpers\Url;
                         <a href="#" data-activity="delete" data-activity-id="<?= $model->id ?>" data-activity-url="<?= Url::to([
                             '/activity/default/delete',
                             'id' => $model->id
-                        ]) ?>" data-activity-confirm="<?= \Yii::t('net_frenzel_activity', 'FRONTEND_WIDGET_ACTIVITY_DELETE_CONFIRMATION') ?>">
+                        ]) ?>" data-confirm="<?= \Yii::t('net_frenzel_activity', 'FRONTEND_WIDGET_ACTIVITY_DELETE_CONFIRMATION') ?>">
                             <i class="fa fa-remove"></i> <?= \Yii::t('app', 'delete') ?>
                         </a>
                     <?php } ?>
