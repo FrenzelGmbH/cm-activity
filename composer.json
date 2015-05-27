@@ -9,7 +9,7 @@
   ],
   "type": "yii2-extension",
   "license": "MIT",
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
   "support": {
     "issues": "https://github.com/frenzelgmbh/cm-activity/issues",
     "source": "https://github.com/frenzelgmbh/cm-activity"
