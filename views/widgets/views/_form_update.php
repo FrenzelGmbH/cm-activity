@@ -54,7 +54,7 @@ use kartik\widgets\Select2;
     </div>
     <div class="col-sm-8"><?= \Yii::t('net_frenzel_activity','What'); ?>:
         <?= $form->field($model, 'next_type')->radioButtonGroup($model->NextTypeArray,[
-                //'class' => 'btn-group-sm',
+                'id' => 'next_type-'.$model->id,
                 'itemOptions' => ['labelOptions' => ['class' => 'btn btn-primary']]
             ])->label(false);?>
     </div>   
