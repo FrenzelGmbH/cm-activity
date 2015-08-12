@@ -76,6 +76,10 @@ class Activity extends \yii\db\ActiveRecord
         return self::$activityTypes;
     }
     
+    /**
+     * returns the type of the activity as a string
+     * @return [type] [description]
+     */
     public function getTypeAsString()
     {
         if(isset(self::$activityTypes[$this->type]))
@@ -83,6 +87,10 @@ class Activity extends \yii\db\ActiveRecord
         return 'finished!';
     }
 
+    /**
+     * returns the type of the activity as a fontawesome icon
+     * @return [type] [description]
+     */
     public function getTypeAsIcon()
     {
         if(isset(self::$activityTypesIcons[$this->type]))

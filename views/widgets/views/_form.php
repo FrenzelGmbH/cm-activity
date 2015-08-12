@@ -29,6 +29,7 @@ use kartik\widgets\Select2;
     <div class="col-sm-12"><?= \Yii::t('net_frenzel_activity','Now'); ?>:
         <?= $form->field($model, 'type')->radioButtonGroup($model->TypeArray,[
                 //'class' => 'btn-group-sm',
+                'id' => 'type-create',
                 'itemOptions' => ['labelOptions' => ['class' => 'btn btn-warning']]
             ])->label(false);?>
          <?= Html::error($model, 'type', ['data-activity' => 'form-summary', 'class' => 'help-block hidden']) ?>
@@ -63,6 +64,7 @@ use kartik\widgets\Select2;
     <div class="col-sm-8"><?= \Yii::t('net_frenzel_activity','Next'); ?>:
         <?= $form->field($model, 'next_type')->radioButtonGroup($model->NextTypeArray,[
                 //'class' => 'btn-group-sm',
+                'id' => 'next_type-create',
                 'itemOptions' => ['labelOptions' => ['class' => 'btn btn-primary']]
             ])->label(false);?>
         <?= Html::error($model, 'next_type', ['data-activity' => 'form-summary', 'class' => 'help-block hidden']) ?>
