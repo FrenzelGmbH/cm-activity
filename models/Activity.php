@@ -157,8 +157,8 @@ class Activity extends \yii\db\ActiveRecord
     public function scenarios()
     {
         return [
-            'create' => ['type', 'entity', 'entity_id', 'text', 'type','next_by'],
-            'update' => ['type' ,'text','next_type','next_at','next_by'],
+            'create' => ['type', 'entity', 'entity_id', 'text', 'next_type', ,'next_at', 'next_by'],
+            'update' => ['type' ,'text', 'next_type', 'next_at', 'next_by'],
         ];
     }
 
@@ -192,7 +192,7 @@ class Activity extends \yii\db\ActiveRecord
             'updated_by' => \Yii::t('app', 'Updated by'),
             'created_at' => \Yii::t('app', 'Created at'),
             'updated_at' => \Yii::t('app', 'Updated at'),
-            'deleted_at' => \Yii::t('app', 'Updated at'),
+            'deleted_at' => \Yii::t('app', 'Deleted at'),
         ];
     }
 
