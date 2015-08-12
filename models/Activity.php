@@ -157,7 +157,7 @@ class Activity extends \yii\db\ActiveRecord
     public function scenarios()
     {
         return [
-            'create' => ['type', 'entity', 'entity_id', 'text', 'next_type', ,'next_at', 'next_by'],
+            'create' => ['type', 'entity', 'entity_id', 'text', 'next_type', 'next_at', 'next_by'],
             'update' => ['type' ,'text', 'next_type', 'next_at', 'next_by'],
         ];
     }
