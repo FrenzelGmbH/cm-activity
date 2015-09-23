@@ -271,10 +271,10 @@ class Activity extends \yii\db\ActiveRecord
         ->limit(1)
         ->One();
 
-        if(is_Object($returnMe))
+        if(!is_null($returnMe))
             return $returnMe->created_at;
 
-        return NULL;
+        return 0;
     }
 
     /**
