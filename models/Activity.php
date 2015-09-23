@@ -38,6 +38,12 @@ class Activity extends \yii\db\ActiveRecord
      */
     public $allowed_next_type = [self::TYPE_CALL, self::TYPE_APPOINTMENT];
 
+    /**
+     * is Latest activity for the passed over model and id
+     * @var boolean $isLatest
+     */
+    public $isLatest;
+
     const EVENT_ACTIVITY_UPDATE = 'net_frenzel_activity_update';
 
     const TYPE_CALL = 1;
@@ -232,14 +238,43 @@ class Activity extends \yii\db\ActiveRecord
      * @param  [type] $class [description]
      * @return [type]        [description]
      */
-    public static function getActivities($model, $class)
+    public static function getActivities($model, $class, $sort = 'DESC')
     {
-        $models = self::find()->where([
+        $maxDate = self::getMaxDate($model, $class);
+        $models = self::find()
+        ->select([
+            '*',
+            'IF({{%net_frenzel_activity}}.created_at='.$maxDate.',1,0) AS isLatest'
+        ])
+        ->where([
             'entity_id' => $model,
             'entity' => $class
-        ])->orderBy('{{%net_frenzel_activity}}.created_at DESC')->with(['author'])->all();
+        ])->orderBy('{{%net_frenzel_activity}}.created_at '.$sort)->with(['author'])->all();
 
         return $models;
+    }
+
+    /**
+     * returns the date of the record which was the latest release
+     * @param  [type] $model [description]
+     * @param  [type] $class [description]
+     * @return [type]        [description]
+     */
+    public static function getMaxDate($model, $class)
+    {
+        $returnMe = self::find()
+        ->select('{{%net_frenzel_activity}}.created_at')
+        ->where([
+            'entity_id' => $model,
+            'entity' => $class
+        ])->orderBy('{{%net_frenzel_activity}}.created_at DESC')
+        ->limit(1)
+        ->One();
+
+        if(is_Object($returnMe))
+            return $returnMe->created_at;
+
+        return NULL;
     }
 
     /**

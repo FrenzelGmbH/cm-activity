@@ -30,8 +30,12 @@ use yii\helpers\Url;
 
             <div class="pull-right">
             <?php
-                $nextResponsible = is_object($model->responsible)?$model->responsible->username:'EVERYONE';
-                echo '<i class="fa fa-hand-o-right fa-2x"></i> ' . $nextResponsible . ' has a ' . $model->NextTypeAsString . ' at ' . \Yii::$app->formatter->asDateTime($model->next_at); ?>
+                if($model->isLatest)
+                {
+                    $nextResponsible = is_object($model->responsible)?$model->responsible->username:'EVERYONE';
+                    echo '<i class="fa fa-hand-o-right fa-2x"></i> ' . $nextResponsible . ' has a ' . $model->NextTypeAsString . ' at ' . \Yii::$app->formatter->asDateTime($model->next_at); 
+                }
+            ?>
             </div>           
 
             <?php if (is_null($model->deleted_at)) { ?>
