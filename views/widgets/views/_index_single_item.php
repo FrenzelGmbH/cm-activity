@@ -63,7 +63,9 @@ use yii\helpers\Url;
             <?php } ?>
         </div>
         <div class="media-right">
-            <i class="fa fa-<?= $model->NextTypeAsIcon; ?> fa-3x text-primary"></i>            
+            <?php if ($model->isLatest) : ?>
+                <i class="fa fa-<?= $model->NextTypeAsIcon; ?> fa-3x text-primary"></i>
+            <?php endif; ?>            
         </div>
         
         <hr>
