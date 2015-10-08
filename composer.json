@@ -24,7 +24,7 @@
   "require": {
     "php" : ">=5.4.0",
     "yiisoft/yii2" : "*",
-    "philippfrenzel/yii2-textareaautosize" : "dev-master",
+    "philippfrenzel/yii2-textareaautosize" : "*",
     "rmrevin/yii2-fontawesome" : "2.*",
     "kartik-v/yii2-widget-activeform" : "*",
     "kartik-v/yii2-widgets" : "*",
