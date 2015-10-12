@@ -15,7 +15,7 @@ use yii\web\JsExpression;
 
 <?php 
 
-$redirect = Url::toRoute([$targetUrl,'id'=>''],true);
+$redirect = Url::toRoute([$targetUrl,'entityTitleField' => $entityTitleField,'id'=>''],true);
 
 $JSEventClick = <<<EOF
 function(calEvent, jsEvent, view) {
@@ -45,7 +45,7 @@ EOF;
                 'eventClick' => new JsExpression($JSEventClick),
                 'eventLimit' => true
           ],
-          'ajaxEvents' => Url::toRoute(['/activity/default/jsoncalendar','entity' => $entity])
+          'ajaxEvents' => Url::toRoute(['/activity/default/jsoncalendar','entity' => $entity, 'entityTitleField' => $entityTitleField])
         ]);
     ?>
 

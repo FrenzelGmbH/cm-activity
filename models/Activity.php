@@ -39,6 +39,12 @@ class Activity extends \yii\db\ActiveRecord
     public $allowed_next_type = [self::TYPE_CALL, self::TYPE_APPOINTMENT];
 
     /**
+     * the fieldname form the entity
+     * @var string entityTitleField defaults to id
+     */
+    public $entityTitleField = 'id';
+
+    /**
      * is Latest activity for the passed over model and id
      * @var boolean $isLatest
      */
@@ -349,7 +355,7 @@ class Activity extends \yii\db\ActiveRecord
      * @param  [type] $endDate   [description]
      * @return [type]            [description]
      */
-    public static function getCalendarActivities($startDate,$endDate,$entity,$entity_id)
+    public static function getCalendarActivities($startDate,$endDate,$entity,$entity_id,$entityTitleField = 'id')
     {
         $events = null;
 
@@ -364,15 +370,27 @@ class Activity extends \yii\db\ActiveRecord
 
         foreach($activities AS $acti)
         {
-            $Event = new \yii2fullcalendar\models\Event();
+            $Event = new \yii2fullcalendar\models\Event();            
+
+            //try to get entity by class
+            $EntityModel = \Yii::createObject($acti->entity);
+            $Entity = $EntityModel::find()->where([$EntityModel::tableName() . '.id' => $acti->entity_id])->One();
+            if(is_null($Entity) OR is_null($entityTitleField) OR $entityTitleField === '')
+            {
+                $Event->title = $acti->NextTypeAsString;
+            }
+            else
+            {
+                $Event->title = $acti->NextTypeAsString . ' ' . $Entity->{$entityTitleField};
+            }
+
             $Event->id = $acti->entity_id;
-            $Event->title = $acti->NextTypeAsString;
             $timeStamp = $acti->next_at;            
             //$startObj = new DateTime();
             $startObj = new DateTime(\Yii::$app->formatter->asDateTime($timeStamp));
             $Event->start = $startObj->format('Y-m-d\Th:i:s\Z');
             $endObj = clone $startObj;
-            $endObj->modify('+15 minutes');
+            $endObj->modify('+30 minutes');
             $Event->end = $endObj->format('Y-m-d\Th:i:s\Z');
             $Event->allDay = false;
             $events[] = $Event;

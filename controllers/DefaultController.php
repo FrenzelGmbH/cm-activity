@@ -177,7 +177,7 @@ class DefaultController extends Controller
      * @param  [type] $_     [description]
      * @return [type]        [description]
      */
-    public function actionJsoncalendar($start=NULL,$end=NULL,$entity=NULL,$entity_id=NULL,$_=NULL){
+    public function actionJsoncalendar($start=NULL,$end=NULL,$entity=NULL,$entity_id=NULL,$_=NULL, $entityTitleField = NULL){
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
         if($start = null)
@@ -186,7 +186,7 @@ class DefaultController extends Controller
             $start = $startObj->format('U');
         }
 
-        $events = Activity::getCalendarActivities($start,$end,$entity,$entity_id);
+        $events = Activity::getCalendarActivities($start,$end,$entity,$entity_id, $entityTitleField);
         return $events;
     }
 }

@@ -29,8 +29,18 @@ class DayWidget extends Widget
      */
     public $entity_id = NULL;
 
+    /**
+     * [$targetUrl description]
+     * @var string
+     */
     public $targetUrl = '/site/index';
    
+    /**
+     * the fieldname form the entity
+     * @var string entityTitleField defaults to id
+     */
+    public $entityTitleField = 'id';
+
     /**
      * @inheritdoc
      */
@@ -40,6 +50,7 @@ class DayWidget extends Widget
             'targetUrl' => $this->targetUrl,
             'entity' => $this->entity,
             'entity_id' => $this->entity_id,
+            'entityTitleField' => $this->entityTitleField,
         ]);
     }
 }
