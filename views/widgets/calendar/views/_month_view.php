@@ -37,7 +37,7 @@ EOF;
           ],  
           'clientOptions' => [
                 'defaultView' => 'month',
-                'height' => 400,
+                'height' => 450,
                 'selectable' => true,
                 'selectHelper' => true,
                 'defaultDate' => date('Y-m-d'),
