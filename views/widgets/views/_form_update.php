@@ -27,13 +27,16 @@ use kartik\widgets\Select2;
 ) ?>
 
 <div class="form-group" data-activity="form-group">
-    <div class="col-sm-12">
+    <div class="col-sm-9">
         <?= net\frenzel\textareaautosize\yii2textareaautosize::widget([
 		      'model'=> $model,
 		      'attribute' => 'text'
 		  ]);
     	?>
         <?= Html::error($model, 'text', ['data-activity' => 'form-summary', 'class' => 'help-block hidden']) ?>
+    </div>
+    <div class="col-sm-3">
+
     </div>
 </div>
 

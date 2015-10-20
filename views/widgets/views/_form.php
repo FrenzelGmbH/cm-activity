@@ -10,10 +10,12 @@ use yii\web\JsExpression;
 use kartik\datetime\DateTimePicker;
 use kartik\form\ActiveForm;
 use kartik\widgets\Select2;
+use yii\bootstrap\ButtonDropdown;
 
 /**
  * this js script allows people to press ctrl+s to save values
  * @var [type]
+ * <label class="control-label" for="activity-text"><?= \Yii::t('net_frenzel_activity','Notes'); ?></label>
  */
 $script = <<<SKRIPT
 
@@ -39,14 +41,34 @@ $this->registerJs($script);
 ) ?>
 
 <div class="form-group" data-activity="form-group">
-    <div class="col-sm-12">
-    <label class="control-label" for="activity-text"><?= \Yii::t('net_frenzel_activity','Notes'); ?></label>
+    <div class="col-sm-9">
         <?= net\frenzel\textareaautosize\yii2textareaautosize::widget([
               'model'=> $model,
               'attribute' => 'text'
           ]);
         ?>
         <?= Html::error($model, 'text', ['data-activity' => 'form-summary', 'class' => 'help-block hidden']) ?>
+    </div>
+    <div class="col-sm-3">
+        <label class="control-label" for="net_frenzel_activity_quick_action">&nbsp;&nbsp;&nbsp;</label>
+        <?php
+
+        // a button group using Dropdown widget
+        echo ButtonDropdown::widget([
+            'options' => [
+                'id' => 'net_frenzel_activity_quick_action',
+                'class' => 'btn btn-info'
+            ],
+            'label' => 'Quick Actions',
+            'dropdown' => [
+                'items' => [
+                    ['label' => 'Not reached, call again', 'url' => '/'],
+                    ['label' => 'No time, pls. call back', 'url' => '#'],
+                ],
+            ],
+        ]);
+
+        ?>
     </div>
 </div>
 
