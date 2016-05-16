@@ -388,10 +388,10 @@ class Activity extends \yii\db\ActiveRecord
             $timeStamp = $acti->next_at;            
             //$startObj = new DateTime();
             $startObj = new DateTime(\Yii::$app->formatter->asDateTime($timeStamp));
-            $Event->start = $startObj->format('Y-m-d\Th:i:s\Z');
+            $Event->start = $startObj->format('Y-m-d\TH:i:s\Z');
             $endObj = clone $startObj;
             $endObj->modify('+30 minutes');
-            $Event->end = $endObj->format('Y-m-d\Th:i:s\Z');
+            $Event->end = $endObj->format('Y-m-d\TH:i:s\Z');
             $Event->allDay = false;
             $events[] = $Event;
         }
